@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Elsa ✦ Valorance</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=Instrument+Serif:ital@1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #f5f0e8;
+            --warm-white: #faf8f3;
+            --sand: #e8e0cc;
+            --stone: #c4b89a;
+            --brown: #7a6a52;
+            --dark: #1a1610;
+            --accent-rose: #d4747a;
+            --accent-mauve: #9b7fa0;
+            --accent-gold: #c9a84c;
+            --accent-sage: #7a9e7e;
+            --accent-coral: #e07b5c;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            width: 100%; height: 100%;
+            overflow: hidden;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            cursor: none;
+        }
+
+        /* --- CUSTOM CURSOR --- */
+        .cursor {
+            position: fixed;
+            width: 10px; height: 10px;
+            background: var(--dark);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease, width 0.2s, height 0.2s, background 0.2s;
+        }
+        .cursor-ring {
+            position: fixed;
+            width: 38px; height: 38px;
+            border: 1.5px solid var(--dark);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: transform 0.15s ease, all 0.3s ease;
+            opacity: 0.5;
+        }
+
+        /* ========================
+           SCREEN 1: ENVELOPE
+        ======================== */
+        #screen-envelope {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--cream);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .env-hint {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--stone);
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            animation: fadeUp 1s 0.8s forwards;
+        }
+
+        .env-wrapper {
+            position: relative;
+            cursor: none;
+        }
+
+        .env-svg-wrap {
+            opacity: 0;
+            animation: fadeUp 1.2s 0.3s forwards;
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        .env-svg-wrap:hover {
+            transform: translateY(-6px) rotate(-1deg);
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.12));
+        }
+
+        .env-label {
+            margin-top: 1.8rem;
+            text-align: center;
+            opacity: 0;
+            animation: fadeUp 1s 1.2s forwards;
+        }
+        .env-label .to {
+            font-family: 'DM Serif Display', serif;
+            font-style: italic;
+            font-size: 1.4rem;
+            color: var(--dark);
+        }
+        .env-label .from {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--stone);
+            letter-spacing: 0.2em;
+            margin-top: 4px;
+        }
+
+        .env-click-aura {
+            position: absolute;
+            inset: -20px;
+            border-radius: 20px;
+            background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+            animation: aura 2.5s ease-in-out infinite;
+        }
+
+        @keyframes aura {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========================
+           SCREEN 2: FLOWER BURST
+        ======================== */
+        #screen-burst {
+            position: fixed;
+            inset: 0;
+            z-index: 90;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .burst-petal {
+            position: absolute;
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0) rotate(0deg);
+            transition: all 1.4s cubic-bezier(0.175, 0.885, 0.32, 1.3);
+        }
+
+        /* ========================
+           SCREEN 3: DASHBOARD GIFT
+        ======================== */
+        #screen-dashboard {
+            position: fixed;
+            inset: 0;
+            z-index: 80;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+            overflow: hidden;
+        }
+        #screen-dashboard.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Noise texture overlay */
+        #screen-dashboard::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+            opacity: 0.035;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .dash-bg {
+            position: absolute;
+            inset: 0;
+            background: var(--warm-white);
+        }
+
+        /* Decorative background blobs */
+        .bg-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.35;
+        }
+        .blob-1 { width: 500px; height: 500px; background: #e8c4c8; top: -150px; left: -100px; }
+        .blob-2 { width: 400px; height: 400px; background: #c4d4c0; bottom: -100px; right: -80px; }
+        .blob-3 { width: 300px; height: 300px; background: #e8d8b0; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+
+        /* --- MAIN LAYOUT --- */
+        .dash-layout {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1.1fr;
+            grid-template-rows: auto 1fr auto;
+            gap: 0;
+            padding: 2.2rem 2.5rem;
+        }
+
+        /* --- TOP BAR --- */
+        .top-bar {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.8rem;
+            opacity: 0;
+            transform: translateY(-15px);
+            transition: all 0.8s 0.2s ease;
+        }
+        .top-bar.show { opacity: 1; transform: translateY(0); }
+
+        .brand-tag {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .brand-dot {
+            width: 8px; height: 8px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            animation: blink 2s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+        .brand-name {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.25em;
+            color: var(--brown);
+            text-transform: uppercase;
+        }
+
+        .top-meta {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        .meta-chip {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            color: var(--stone);
+            text-transform: uppercase;
+        }
+        .meta-chip span { color: var(--brown); }
+        .status-live {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--accent-sage);
+            letter-spacing: 0.15em;
+        }
+        .live-dot {
+            width: 6px; height: 6px;
+            background: var(--accent-sage);
+            border-radius: 50%;
+            animation: blink 1.5s infinite;
+        }
+
+        /* --- LEFT COLUMN: Message --- */
+        .col-left {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            padding-right: 2rem;
+        }
+
+        .recipient-card {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s 0.4s ease;
+        }
+        .recipient-card.show { opacity: 1; transform: translateY(0); }
+
+        .recipient-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.25em;
+            color: var(--stone);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .recipient-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 3.8rem;
+            line-height: 1;
+            color: var(--dark);
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+        }
+        .recipient-name .accent-star {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            color: var(--accent-gold);
+        }
+        .recipient-sub {
+            font-size: 0.8rem;
+            color: var(--stone);
+            margin-top: 6px;
+            font-style: italic;
+        }
+
+        /* Message card */
+        .message-card {
+            background: var(--dark);
+            border-radius: 20px;
+            padding: 2.2rem;
+            position: relative;
+            overflow: hidden;
+            flex: 1;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s 0.6s ease;
+        }
+        .message-card.show { opacity: 1; transform: translateY(0); }
+
+        .message-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-rose), var(--accent-mauve), var(--accent-gold));
+        }
+
+        .msg-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+        .msg-icon {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        .msg-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.2em;
+            color: rgba(255,255,255,0.35);
+            text-transform: uppercase;
+        }
+        .msg-time {
+            margin-left: auto;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            color: rgba(255,255,255,0.2);
+            letter-spacing: 0.1em;
+        }
+
+        .message-text {
+            font-family: 'DM Serif Display', serif;
+            font-style: italic;
+            font-size: 1.25rem;
+            line-height: 1.65;
+            color: rgba(255,255,255,0.88);
+            min-height: 130px;
+        }
+
+        .msg-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.1em;
+            background: var(--accent-gold);
+            vertical-align: middle;
+            animation: cursorBlink 1s step-end infinite;
+            margin-left: 2px;
+        }
+        @keyframes cursorBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .msg-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .msg-from {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 0.15em;
+        }
+        .msg-from span { color: rgba(255,255,255,0.6); }
+        .msg-tag {
+            background: rgba(201,168,76,0.15);
+            border: 1px solid rgba(201,168,76,0.3);
+            color: var(--accent-gold);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 0.15em;
+            padding: 4px 10px;
+            border-radius: 100px;
+            text-transform: uppercase;
+        }
+
+        /* --- RIGHT COLUMN: Visual Dashboard --- */
+        .col-right {
+            display: grid;
+            grid-template-rows: 1fr auto;
+            gap: 1.2rem;
+        }
+
+        /* Bouquet Hero */
+        .bouquet-card {
+            background: linear-gradient(135deg, #f0e8d8 0%, #ede0c8 100%);
+            border-radius: 24px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(196,184,154,0.4);
+            opacity: 0;
+            transform: scale(0.96);
+            transition: all 0.9s 0.5s ease;
+        }
+        .bouquet-card.show { opacity: 1; transform: scale(1); }
+
+        .bouquet-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 80%, rgba(212,116,122,0.15) 0%, transparent 70%);
+        }
+
+        .bouquet-badge {
+            position: absolute;
+            top: 1.5rem; right: 1.5rem;
+            background: var(--dark);
+            color: white;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 0.2em;
+            padding: 6px 12px;
+            border-radius: 100px;
+            text-transform: uppercase;
+            z-index: 2;
+        }
+
+        .bouquet-label {
+            position: absolute;
+            bottom: 1.5rem; left: 1.5rem;
+            z-index: 2;
+        }
+        .bouquet-label .big {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.6rem;
+            color: var(--dark);
+            display: block;
+        }
+        .bouquet-label .small {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--brown);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .bouquet-svg {
+            width: 240px;
+            height: auto;
+            position: relative;
+            z-index: 1;
+            animation: floatBouquet 5s ease-in-out infinite;
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.12));
+        }
+
+        @keyframes floatBouquet {
+            0%, 100% { transform: translateY(0) rotate(-1deg); }
+            50% { transform: translateY(-12px) rotate(1deg); }
+        }
+
+        /* Stats row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.8s 0.9s ease;
+        }
+        .stats-row.show { opacity: 1; transform: translateY(0); }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.2rem 1.4rem;
+            border: 1px solid rgba(196,184,154,0.3);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.07);
+        }
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            height: 3px; width: 100%;
+        }
+        .stat-card.s1::after { background: var(--accent-rose); }
+        .stat-card.s2::after { background: var(--accent-mauve); }
+        .stat-card.s3::after { background: var(--accent-gold); }
+
+        .stat-icon { font-size: 1.3rem; margin-bottom: 8px; }
+        .stat-value {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.8rem;
+            color: var(--dark);
+            line-height: 1;
+        }
+        .stat-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            color: var(--stone);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+        .stat-change {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.7rem;
+            color: var(--accent-sage);
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        /* --- BOTTOM BAR --- */
+        .bottom-bar {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1rem;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.8s 1.1s ease;
+        }
+        .bottom-bar.show { opacity: 1; transform: translateY(0); }
+
+        .footer-text {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--stone);
+            letter-spacing: 0.15em;
+        }
+
+        /* Floating flowers decoration */
+        .deco-flowers {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .deco-f {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0.12;
+            animation: floatDeco linear infinite;
+        }
+
+        @keyframes floatDeco {
+            from { transform: translateY(110vh) rotate(0deg); }
+            to { transform: translateY(-10vh) rotate(360deg); }
+        }
+
+        /* Wavy border for message text highlight */
+        .highlight-valorance {
+            color: var(--accent-gold);
+            font-style: normal;
+        }
+        .highlight-rose {
+            color: #f09fa3;
+            font-style: normal;
+        }
+
+        /* Confetti canvas */
+        #confetti-canvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 200;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-ring" id="cursor-ring"></div>
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- SCREEN 1: ENVELOPE -->
+    <div id="screen-envelope">
+        <p class="env-hint">✦ Klik untuk membuka ✦</p>
+        <div class="env-wrapper">
+            <div class="env-click-aura"></div>
+            <div class="env-svg-wrap" id="env-svg" onclick="openEnvelope()">
+                <svg width="240" height="180" viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Shadow -->
+                    <ellipse cx="120" cy="172" rx="90" ry="8" fill="rgba(0,0,0,0.06)"/>
+                    <!-- Envelope body -->
+                    <rect x="10" y="40" width="220" height="135" rx="12" fill="#f5eed8" stroke="#ddd0b0" stroke-width="1.5"/>
+                    <!-- Bottom left/right triangles (envelope fold) -->
+                    <path d="M10 175 L120 105 L230 175" fill="#ede3c5" stroke="none"/>
+                    <path d="M10 40 L120 105 L230 40" fill="#f0e6c8" stroke="#ddd0b0" stroke-width="1"/>
+                    <!-- Flap top (closed) -->
+                    <path d="M10 40 L120 108 L230 40 L222 32 Q120 28 18 32 Z" fill="#e8ddc0" stroke="#ddd0b0" stroke-width="1.5"/>
+                    <!-- Wax seal -->
+                    <circle cx="120" cy="107" r="18" fill="#c9a84c" opacity="0.9"/>
+                    <circle cx="120" cy="107" r="14" fill="#b8953e"/>
+                    <text x="120" y="113" text-anchor="middle" font-size="13" fill="#f5eed8">✦</text>
+                    <!-- Stamp -->
+                    <rect x="190" y="50" width="32" height="28" rx="3" fill="#f0e2e4" stroke="#ddd0b0" stroke-width="1"/>
+                    <text x="206" y="68" text-anchor="middle" font-size="14">🌸</text>
+                    <!-- Address lines -->
+                    <rect x="30" y="130" width="80" height="3" rx="2" fill="#ddd0b0" opacity="0.6"/>
+                    <rect x="30" y="140" width="55" height="3" rx="2" fill="#ddd0b0" opacity="0.4"/>
+                    <rect x="30" y="150" width="65" height="3" rx="2" fill="#ddd0b0" opacity="0.3"/>
+                </svg>
+            </div>
+        </div>
+        <div class="env-label">
+            <div class="to">For Elsa ✨</div>
+            <div class="from">FROM ✦ VALORANCE TEAM</div>
+        </div>
+    </div>
+
+    <!-- SCREEN 2: BURST -->
+    <div id="screen-burst"></div>
+
+    <!-- SCREEN 3: DASHBOARD -->
+    <div id="screen-dashboard">
+        <div class="dash-bg">
+            <div class="bg-blob blob-1"></div>
+            <div class="bg-blob blob-2"></div>
+            <div class="bg-blob blob-3"></div>
+        </div>
+
+        <!-- Floating deco flowers -->
+        <div class="deco-flowers" id="deco-flowers"></div>
+
+        <div class="dash-layout">
+            <!-- TOP BAR -->
+            <div class="top-bar" id="top-bar">
+                <div class="brand-tag">
+                    <div class="brand-dot"></div>
+                    <div class="brand-name">Valorance × A Special Delivery</div>
+                </div>
+                <div class="top-meta">
+                    <div class="meta-chip">TO: <span>Elsa</span></div>
+                    <div class="meta-chip">TEAM: <span>Valorance</span></div>
+                    <div class="status-live">
+                        <div class="live-dot"></div>
+                        LIVE
+                    </div>
+                </div>
+            </div>
+
+            <!-- LEFT COL -->
+            <div class="col-left">
+                <div class="recipient-card" id="r-card">
+                    <div class="recipient-label">✦ Pesan Spesial Untuk</div>
+                    <div class="recipient-name">
+                        Elsa
+                        <span class="accent-star">✦</span>
+                    </div>
+                    <div class="recipient-sub">Member of Valorance Team · Event Collab</div>
+                </div>
+
+                <div class="message-card" id="m-card">
+                    <div class="msg-header">
+                        <div class="msg-icon">✉</div>
+                        <div class="msg-title">Personal Message</div>
+                        <div class="msg-time" id="msg-time"></div>
+                    </div>
+                    <div class="message-text" id="typewriter-text"><span class="msg-cursor" id="cursor-blink"></span></div>
+                    <div class="msg-footer">
+                        <div class="msg-from">From: <span>Valorance</span></div>
+                        <div class="msg-tag">✦ Thank You</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COL -->
+            <div class="col-right">
+                <div class="bouquet-card" id="b-card">
+                    <div class="bouquet-badge">✦ A Bouquet for Elsa</div>
+
+                    <!-- Rich SVG Bouquet -->
+                    <svg class="bouquet-svg" viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Stems -->
+                        <path d="M80 190 Q75 150 70 120" stroke="#6b8c63" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        <path d="M80 190 Q80 155 80 125" stroke="#7a9e7e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                        <path d="M80 190 Q85 150 90 122" stroke="#6b8c63" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                        <path d="M80 190 Q65 145 55 115" stroke="#7a9e7e" stroke-width="2" fill="none" stroke-linecap="round"/>
+                        <path d="M80 190 Q95 145 105 115" stroke="#6b8c63" stroke-width="2" fill="none" stroke-linecap="round"/>
+                        <path d="M80 190 Q55 140 42 108" stroke="#7a9e7e" stroke-width="2" fill="none" stroke-linecap="round"/>
+                        <path d="M80 190 Q105 140 118 108" stroke="#6b8c63" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+                        <!-- Leaves -->
+                        <ellipse cx="68" cy="148" rx="10" ry="5" fill="#7a9e7e" transform="rotate(-30 68 148)" opacity="0.8"/>
+                        <ellipse cx="92" cy="145" rx="10" ry="5" fill="#6b8c63" transform="rotate(30 92 145)" opacity="0.8"/>
+                        <ellipse cx="55" cy="130" rx="9" ry="4" fill="#7a9e7e" transform="rotate(-45 55 130)" opacity="0.7"/>
+                        <ellipse cx="105" cy="128" rx="9" ry="4" fill="#6b8c63" transform="rotate(45 105 128)" opacity="0.7"/>
+
+                        <!-- Wrapping paper -->
+                        <path d="M50 180 L65 155 L80 185 L95 155 L110 180 Z" fill="#e8dcc8" stroke="#d4c8a8" stroke-width="1"/>
+                        <path d="M57 180 L80 165 L103 180" fill="#f0e6d0" stroke="none"/>
+                        <!-- Ribbon bow -->
+                        <path d="M70 165 Q62 158 68 155 Q74 152 80 160" fill="none" stroke="#d4747a" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M90 165 Q98 158 92 155 Q86 152 80 160" fill="none" stroke="#d4747a" stroke-width="2.5" stroke-linecap="round"/>
+                        <circle cx="80" cy="160" r="3" fill="#d4747a"/>
+
+                        <!-- Rose 1 - center big -->
+                        <circle cx="80" cy="100" r="22" fill="#d90429" opacity="0.15"/>
+                        <circle cx="80" cy="105" r="18" fill="#e63946"/>
+                        <circle cx="80" cy="103" r="13" fill="#d90429"/>
+                        <circle cx="80" cy="101" r="8" fill="#c1121f"/>
+                        <!-- Rose 1 petals -->
+                        <ellipse cx="80" cy="88" rx="7" ry="11" fill="#e63946" opacity="0.9"/>
+                        <ellipse cx="91" cy="96" rx="7" ry="11" fill="#ef233c" opacity="0.85" transform="rotate(60 91 96)"/>
+                        <ellipse cx="87" cy="114" rx="7" ry="11" fill="#d90429" opacity="0.8" transform="rotate(120 87 114)"/>
+                        <ellipse cx="73" cy="114" rx="7" ry="11" fill="#e63946" opacity="0.8" transform="rotate(240 73 114)"/>
+                        <ellipse cx="69" cy="96" rx="7" ry="11" fill="#ef233c" opacity="0.85" transform="rotate(300 69 96)"/>
+
+                        <!-- Rose 2 - left -->
+                        <circle cx="52" cy="98" r="16" fill="#ffb7b2"/>
+                        <circle cx="52" cy="96" r="11" fill="#ff85a1"/>
+                        <circle cx="52" cy="94" r="7" fill="#e86080"/>
+                        <ellipse cx="52" cy="84" rx="5.5" ry="9" fill="#ffb7b2" opacity="0.9"/>
+                        <ellipse cx="62" cy="90" rx="5.5" ry="9" fill="#ff85a1" opacity="0.85" transform="rotate(60 62 90)"/>
+                        <ellipse cx="58" cy="106" rx="5.5" ry="9" fill="#ffb7b2" opacity="0.8" transform="rotate(120 58 106)"/>
+                        <ellipse cx="46" cy="106" rx="5.5" ry="9" fill="#ff85a1" opacity="0.8" transform="rotate(240 46 106)"/>
+                        <ellipse cx="42" cy="90" rx="5.5" ry="9" fill="#ffb7b2" opacity="0.85" transform="rotate(300 42 90)"/>
+
+                        <!-- Rose 3 - right -->
+                        <circle cx="108" cy="98" r="16" fill="#ffb703"/>
+                        <circle cx="108" cy="96" r="11" fill="#f4a226"/>
+                        <circle cx="108" cy="94" r="7" fill="#e08c10"/>
+                        <ellipse cx="108" cy="84" rx="5.5" ry="9" fill="#ffb703" opacity="0.9"/>
+                        <ellipse cx="118" cy="90" rx="5.5" ry="9" fill="#f4a226" opacity="0.85" transform="rotate(60 118 90)"/>
+                        <ellipse cx="114" cy="106" rx="5.5" ry="9" fill="#ffb703" opacity="0.8" transform="rotate(120 114 106)"/>
+                        <ellipse cx="102" cy="106" rx="5.5" ry="9" fill="#f4a226" opacity="0.8" transform="rotate(240 102 106)"/>
+                        <ellipse cx="98" cy="90" rx="5.5" ry="9" fill="#ffb703" opacity="0.85" transform="rotate(300 98 90)"/>
+
+                        <!-- Tiny flowers scattered -->
+                        <circle cx="40" cy="80" r="5" fill="#9b7fa0"/>
+                        <circle cx="120" cy="78" r="6" fill="#9b7fa0"/>
+                        <circle cx="62" cy="72" r="5" fill="white"/>
+                        <circle cx="98" cy="70" r="5" fill="white"/>
+                        <circle cx="80" cy="70" r="4" fill="#e07b5c"/>
+
+                        <!-- Sparkles -->
+                        <text x="30" y="70" font-size="10" opacity="0.6">✦</text>
+                        <text x="118" y="68" font-size="8" opacity="0.5">✦</text>
+                        <text x="75" y="55" font-size="7" opacity="0.4">✦</text>
+                    </svg>
+
+                    <div class="bouquet-label">
+                        <span class="big">A Bouquet</span>
+                        <span class="small">For Elsa · From Valorance</span>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-row" id="s-row">
+                    <div class="stat-card s1">
+                        <div class="stat-icon">💐</div>
+                        <div class="stat-value" id="stat1">0</div>
+                        <div class="stat-label">Bunga Untukmu</div>
+                        <div class="stat-change">↑ Penuh Kasih</div>
+                    </div>
+                    <div class="stat-card s2">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-value" id="stat2">0</div>
+                        <div class="stat-label">Terima Kasih</div>
+                        <div class="stat-change">↑ Sepenuh Hati</div>
+                    </div>
+                    <div class="stat-card s3">
+                        <div class="stat-icon">🚀</div>
+                        <div class="stat-value">∞</div>
+                        <div class="stat-label">Best Wishes</div>
+                        <div class="stat-change">↑ Selalu</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTTOM BAR -->
+            <div class="bottom-bar" id="b-bar">
+                <div class="footer-text">© 2025 Valorance Team · Made with 💜 for Elsa</div>
+                <div class="footer-text">✦ &nbsp; Keep shining, always ✦</div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // ========== CURSOR ==========
+    const cursor = document.getElementById('cursor');
+    const cursorRing = document.getElementById('cursor-ring');
+    let cx = 0, cy = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+        cx = e.clientX; cy = e.clientY;
+        cursor.style.left = cx + 'px';
+        cursor.style.top = cy + 'px';
+    });
+    function lerpCursor() {
+        rx += (cx - rx) * 0.12;
+        ry += (cy - ry) * 0.12;
+        cursorRing.style.left = rx + 'px';
+        cursorRing.style.top = ry + 'px';
+        requestAnimationFrame(lerpCursor);
+    }
+    lerpCursor();
+
+    // ========== FLOWER TYPES ==========
+    const flowerTypes = [
+        `<svg width="70" height="70" viewBox="0 0 100 100"><circle cx="50" cy="50" r="10" fill="#7a3f1e"/>${Array.from({length:12},(_,i)=>`<ellipse cx="50" cy="22" rx="6" ry="16" fill="#ffb703" transform="rotate(${i*30} 50 50)"/>`).join('')}</svg>`,
+        `<svg width="60" height="60" viewBox="0 0 100 100">${Array.from({length:5},(_,i)=>`<ellipse cx="50" cy="26" rx="9" ry="20" fill="#e63946" opacity="0.85" transform="rotate(${i*72} 50 50)"/>`).join('')}<circle cx="50" cy="50" r="9" fill="#fff3"/></svg>`,
+        `<svg width="55" height="55" viewBox="0 0 100 100">${Array.from({length:6},(_,i)=>`<ellipse cx="50" cy="28" rx="6" ry="14" fill="#f8f9fa" transform="rotate(${i*60} 50 50)"/>`).join('')}<circle cx="50" cy="50" r="7" fill="#ffeb3b"/></svg>`,
+        `<svg width="65" height="65" viewBox="0 0 100 100">${Array.from({length:8},(_,i)=>`<circle cx="50" cy="28" r="13" fill="#9b7fa0" transform="rotate(${i*45} 50 50)"/>`).join('')}<circle cx="50" cy="50" r="8" fill="#fff9c4"/></svg>`,
+        `<svg width="70" height="70" viewBox="0 0 100 100">${Array.from({length:10},(_,i)=>`<ellipse cx="50" cy="24" rx="7" ry="16" fill="#ffb7b2" opacity="0.9" transform="rotate(${i*36} 50 50)"/>`).join('')}<circle cx="50" cy="50" r="10" fill="#ff85a1"/></svg>`,
+        `<svg width="50" height="50" viewBox="0 0 100 100">${Array.from({length:6},(_,i)=>`<ellipse cx="50" cy="26" rx="7" ry="14" fill="#e07b5c" transform="rotate(${i*60} 50 50)"/>`).join('')}<circle cx="50" cy="50" r="8" fill="#ffcb77"/></svg>`,
+    ];
+
+    // ========== OPEN ENVELOPE ==========
+    function openEnvelope() {
+        const envPage = document.getElementById('screen-envelope');
+        envPage.style.opacity = '0';
+        envPage.style.transform = 'scale(0.95)';
+        setTimeout(() => { envPage.style.display = 'none'; }, 900);
+
+        // Burst flowers
+        burstFlowers();
+
+        // After 3.5s, show dashboard
+        setTimeout(() => {
+            showDashboard();
+        }, 3200);
+    }
+
+    function burstFlowers() {
+        const burst = document.getElementById('screen-burst');
+        const count = 130;
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+
+        for (let i = 0; i < count; i++) {
+            setTimeout(() => {
+                const div = document.createElement('div');
+                div.className = 'burst-petal';
+                div.innerHTML = flowerTypes[Math.floor(Math.random() * flowerTypes.length)];
+
+                const angle = Math.random() * Math.PI * 2;
+                const dist = 80 + Math.random() * Math.max(window.innerWidth, window.innerHeight) * 0.7;
+                const tx = cx + Math.cos(angle) * dist;
+                const ty = cy + Math.sin(angle) * dist;
+                const scale = 0.4 + Math.random() * 1.1;
+
+                div.style.left = cx + 'px';
+                div.style.top = cy + 'px';
+                burst.appendChild(div);
+
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        div.style.transform = `translate(${tx - cx - 35}px, ${ty - cy - 35}px) scale(${scale}) rotate(${Math.random()*360}deg)`;
+                        div.style.opacity = '1';
+                        div.style.transitionDuration = (1.2 + Math.random() * 0.8) + 's';
+                    });
+                });
+            }, i * 18);
+        }
+
+        // Fade burst out
+        setTimeout(() => {
+            burst.style.transition = 'opacity 1s';
+            burst.style.opacity = '0';
+        }, 2600);
+    }
+
+    // ========== SHOW DASHBOARD ==========
+    function showDashboard() {
+        const dash = document.getElementById('screen-dashboard');
+        dash.classList.add('active');
+
+        // Spawn deco flowers
+        spawnDecoFlowers();
+
+        // Stagger show elements
+        setTimeout(() => document.getElementById('top-bar').classList.add('show'), 200);
+        setTimeout(() => document.getElementById('r-card').classList.add('show'), 400);
+        setTimeout(() => document.getElementById('m-card').classList.add('show'), 500);
+        setTimeout(() => document.getElementById('b-card').classList.add('show'), 600);
+        setTimeout(() => document.getElementById('s-row').classList.add('show'), 800);
+        setTimeout(() => document.getElementById('b-bar').classList.add('show'), 1000);
+
+        // Set time
+        const now = new Date();
+        document.getElementById('msg-time').textContent = now.toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
+
+        // Typewriter
+        setTimeout(() => startTypewriter(), 800);
+
+        // Animate stats
+        setTimeout(() => animateStat('stat1', 99, '✦'), 1000);
+        setTimeout(() => animateStat('stat2', 1, '', true), 1200);
+
+        // Confetti burst after typing
+        setTimeout(() => launchConfetti(), 5000);
+    }
+
+    // ========== DECO FLOWERS ==========
+    function spawnDecoFlowers() {
+        const container = document.getElementById('deco-flowers');
+        const emojis = ['🌸','🌺','🌼','🌻','🌹','💮','🌷','✿','❀'];
+        for (let i = 0; i < 12; i++) {
+            const span = document.createElement('span');
+            span.className = 'deco-f';
+            span.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            span.style.left = (Math.random() * 100) + '%';
+            span.style.animationDuration = (15 + Math.random() * 20) + 's';
+            span.style.animationDelay = (-Math.random() * 20) + 's';
+            span.style.fontSize = (1 + Math.random() * 1.5) + 'rem';
+            container.appendChild(span);
+        }
+    }
+
+    // ========== TYPEWRITER ==========
+    const message = `Halo Elsa,\n\nanyway makasih banyak ya udah mau bergabung dan jadi bagian dari tim Valorance. Terima kasih juga buat segala dukungan dan bantuannya selama ini.\n\nOh iya, makasih banyak juga udah ngizinin aku buat sedikit berkecimpung dan belajar di project event kamu kemarin. Semoga hal-hal baik selalu menyertai setiap langkah dan aktivitas kamu ya, Elsa ✨`;
+
+    function startTypewriter() {
+        const el = document.getElementById('typewriter-text');
+        const blink = document.getElementById('cursor-blink');
+        el.innerHTML = '';
+        el.appendChild(blink);
+        let i = 0;
+
+        function type() {
+            if (i < message.length) {
+                const ch = message.charAt(i);
+                if (ch === '\n') {
+                    blink.insertAdjacentHTML('beforebegin', '<br>');
+                } else {
+                    blink.insertAdjacentText('beforebegin', ch);
+                }
+                i++;
+                setTimeout(type, i < 10 ? 80 : 32);
+            } else {
+                // Hide cursor after done
+                setTimeout(() => { blink.style.display = 'none'; }, 1500);
+            }
+        }
+        type();
+    }
+
+    // ========== STAT COUNTER ==========
+    function animateStat(id, target, suffix = '', infinite = false) {
+        const el = document.getElementById(id);
+        let current = 0;
+        const step = Math.ceil(target / 40);
+        const interval = setInterval(() => {
+            current = Math.min(current + step, target);
+            el.textContent = current + suffix;
+            if (current >= target) {
+                clearInterval(interval);
+                if (infinite) el.textContent = '∞';
+            }
+        }, 40);
+    }
+
+    // ========== CONFETTI ==========
+    function launchConfetti() {
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        canvas.style.opacity = '1';
+
+        const pieces = [];
+        const colors = ['#d4747a','#9b7fa0','#c9a84c','#7a9e7e','#e07b5c','#ffb703','#e63946','#ffb7b2'];
+
+        for (let i = 0; i < 80; i++) {
+            pieces.push({
+                x: Math.random() * canvas.width,
+                y: -20,
+                w: 5 + Math.random() * 8,
+                h: 3 + Math.random() * 5,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                vx: (Math.random() - 0.5) * 3,
+                vy: 2 + Math.random() * 3,
+                angle: Math.random() * Math.PI * 2,
+                va: (Math.random() - 0.5) * 0.2,
+                life: 1
+            });
+        }
+
+        let frame = 0;
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            pieces.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.angle += p.va;
+                p.life -= 0.006;
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.angle);
+                ctx.globalAlpha = Math.max(0, p.life);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+                ctx.restore();
+            });
+            frame++;
+            if (frame < 180) requestAnimationFrame(animate);
+            else {
+                canvas.style.opacity = '0';
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+        animate();
+    }
+</script>
+</body>
+</html>
